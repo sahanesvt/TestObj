@@ -7,29 +7,7 @@ namespace TestObjectClass2
 {
  
 
-    public class Web_ : Rectangle
-    {
-        public Web_(double depth, double thickness, double F_y)
-            : base(depth, thickness, F_y)
-        {
-            this.BotLocation = 0;
-            this.CG = 0;
-            this.TopLocation = 0;
-        }
-
-        public override double Area()
-        {
-            return x * y;
-        }
-        public override double I_x()
-        {
-            return x * Math.Pow(y, 3) / 12;
-        }
-        public override double I_y()
-        {
-            return y * Math.Pow(x, 3) / 12;
-        }
-    }
+    
 
     public class TopFlange_ : Rectangle
     {
@@ -107,17 +85,17 @@ namespace TestObjectClass2
     public class BeamParts
     {
         public BotFlange BotFlange { get; set; }
-        public Web_ Web { get; set; }
+        public Web web { get; set; }
         public TopFlange_ TopFlange { get; set; }
         public Bolster_ Bolster { get; set; }
         public Slab_ Slab { get; set; }
 
         public BeamParts() { }
 
-        public BeamParts(BotFlange botFlange, Web_ web, TopFlange_ topFlange, Bolster_ bolster, Slab_ slab)
+        public BeamParts(BotFlange botFlange, Web web, TopFlange_ topFlange, Bolster_ bolster, Slab_ slab)
         {
             BotFlange = botFlange;
-            Web = web;
+            this.web = web;
             TopFlange = topFlange;
             Bolster = bolster;
             Slab = slab;
@@ -129,7 +107,7 @@ namespace TestObjectClass2
     public class Beam
     {
         public BotFlange botFlange { get; set; }
-        public Web_ Web { get; set; }
+        public Web Web { get; set; }
         public TopFlange_ TopFlange { get; set; }
         public Bolster_ Bolster { get; set; }
         public Slab_ Slab { get; set; }
@@ -137,7 +115,7 @@ namespace TestObjectClass2
         public Beam()
         {
             botFlange = new BotFlange(0, 0, 0);
-            Web = new Web_(0, 0, 0);
+            Web = new Web(0, 0, 0);
             TopFlange = new TopFlange_(0, 0, 0);
             Bolster = new Bolster_(0, 0, 0);
             Slab = new Slab_(0, 0, 0);
@@ -146,7 +124,7 @@ namespace TestObjectClass2
         public Beam(BeamParts beamParts)
         {
             botFlange = beamParts.BotFlange;
-            Web = beamParts.Web;
+            Web = beamParts.web;
             TopFlange = beamParts.TopFlange;
             Bolster = beamParts.Bolster;
             Slab = beamParts.Slab;
@@ -156,18 +134,18 @@ namespace TestObjectClass2
             beamParts.BotFlange.BotLocation = 0;
             beamParts.BotFlange.CG = beamParts.BotFlange.y / 2;
             beamParts.BotFlange.TopLocation = beamParts.BotFlange.y;
-            beamParts.Web.BotLocation = beamParts.BotFlange.y;
-            beamParts.Web.CG = beamParts.BotFlange.y + beamParts.Web.y / 2;
-            beamParts.Web.TopLocation = beamParts.BotFlange.y + beamParts.Web.y;
-            beamParts.TopFlange.BotLocation = beamParts.BotFlange.y + beamParts.Web.y;
-            beamParts.TopFlange.CG = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y / 2;
-            beamParts.TopFlange.TopLocation = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y;
-            beamParts.Bolster.BotLocation = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y;
-            beamParts.Bolster.CG = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y + beamParts.Bolster.y / 2;
-            beamParts.Bolster.TopLocation = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y + beamParts.Bolster.y;
-            beamParts.Slab.BotLocation = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y + beamParts.Bolster.y;
-            beamParts.Slab.CG = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y + beamParts.Bolster.y + beamParts.Slab.y / 2;
-            beamParts.Slab.TopLocation = beamParts.BotFlange.y + beamParts.Web.y + beamParts.TopFlange.y + beamParts.Bolster.y + beamParts.Slab.y;
+            beamParts.web.BotLocation = beamParts.BotFlange.y;
+            beamParts.web.CG = beamParts.BotFlange.y + beamParts.web.y / 2;
+            beamParts.web.TopLocation = beamParts.BotFlange.y + beamParts.web.y;
+            beamParts.TopFlange.BotLocation = beamParts.BotFlange.y + beamParts.web.y;
+            beamParts.TopFlange.CG = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y / 2;
+            beamParts.TopFlange.TopLocation = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y;
+            beamParts.Bolster.BotLocation = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y;
+            beamParts.Bolster.CG = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y + beamParts.Bolster.y / 2;
+            beamParts.Bolster.TopLocation = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y + beamParts.Bolster.y;
+            beamParts.Slab.BotLocation = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y + beamParts.Bolster.y;
+            beamParts.Slab.CG = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y + beamParts.Bolster.y + beamParts.Slab.y / 2;
+            beamParts.Slab.TopLocation = beamParts.BotFlange.y + beamParts.web.y + beamParts.TopFlange.y + beamParts.Bolster.y + beamParts.Slab.y;
         }
 
         public double Area(double modRatio)
@@ -207,7 +185,7 @@ namespace TestObjectClass2
             width = Convert.ToDouble(Console.ReadLine());
             Console.WriteLine("Enter Web Depth : ");
             depth = Convert.ToDouble(Console.ReadLine());
-            beamParts.Web = new Web_(width, depth, 4);
+            beamParts.web = new Web(width, depth, 4);
 
             Console.WriteLine("Enter Top Flange Width : ");
             width = Convert.ToDouble(Console.ReadLine());
