@@ -7,9 +7,9 @@ namespace TestObjectClass2
 {
  
 
-    public class BotFlange_ : Rectangle
+    public class BotFlange : Rectangle
     {
-        public BotFlange_(double width, double depth, double F_y)
+        public BotFlange(double width, double depth, double F_y)
             : base(width, depth, F_y)
         {
             this.BotLocation = 0;
@@ -130,7 +130,7 @@ namespace TestObjectClass2
 
     public class BeamParts
     {
-        public BotFlange_ BotFlange { get; set; }
+        public BotFlange BotFlange { get; set; }
         public Web_ Web { get; set; }
         public TopFlange_ TopFlange { get; set; }
         public Bolster_ Bolster { get; set; }
@@ -138,7 +138,7 @@ namespace TestObjectClass2
 
         public BeamParts() { }
 
-        public BeamParts(BotFlange_ botFlange, Web_ web, TopFlange_ topFlange, Bolster_ bolster, Slab_ slab)
+        public BeamParts(BotFlange botFlange, Web_ web, TopFlange_ topFlange, Bolster_ bolster, Slab_ slab)
         {
             BotFlange = botFlange;
             Web = web;
@@ -152,7 +152,7 @@ namespace TestObjectClass2
 
     public class Beam
     {
-        public BotFlange_ BotFlange { get; set; }
+        public BotFlange botFlange { get; set; }
         public Web_ Web { get; set; }
         public TopFlange_ TopFlange { get; set; }
         public Bolster_ Bolster { get; set; }
@@ -160,7 +160,7 @@ namespace TestObjectClass2
 
         public Beam()
         {
-            BotFlange = new BotFlange_(0, 0, 0);
+            botFlange = new BotFlange(0, 0, 0);
             Web = new Web_(0, 0, 0);
             TopFlange = new TopFlange_(0, 0, 0);
             Bolster = new Bolster_(0, 0, 0);
@@ -169,11 +169,13 @@ namespace TestObjectClass2
 
         public Beam(BeamParts beamParts)
         {
-            BotFlange = beamParts.BotFlange;
+            botFlange = beamParts.BotFlange;
             Web = beamParts.Web;
             TopFlange = beamParts.TopFlange;
             Bolster = beamParts.Bolster;
             Slab = beamParts.Slab;
+            
+            
 
             beamParts.BotFlange.BotLocation = 0;
             beamParts.BotFlange.CG = beamParts.BotFlange.y / 2;
@@ -194,18 +196,18 @@ namespace TestObjectClass2
 
         public double Area(double modRatio)
         {
-            return BotFlange.Area() + Web.Area() + TopFlange.Area() + (Bolster.Area() + Slab.Area()) / modRatio;
+            return botFlange.Area() + Web.Area() + TopFlange.Area() + (Bolster.Area() + Slab.Area()) / modRatio;
         }
         public double NA(double modRatio)
         {
-            return (BotFlange.Area() * BotFlange.CG + Web.Area() * Web.CG + TopFlange.Area() * TopFlange.CG + (Bolster.Area() * Bolster.CG + Slab.Area() * Slab.CG) / modRatio)
-                            / (BotFlange.Area() + Web.Area() + TopFlange.Area() + (Bolster.Area() + Slab.Area()) / modRatio);
+            return (botFlange.Area() * botFlange.CG + Web.Area() * Web.CG + TopFlange.Area() * TopFlange.CG + (Bolster.Area() * Bolster.CG + Slab.Area() * Slab.CG) / modRatio)
+                            / (botFlange.Area() + Web.Area() + TopFlange.Area() + (Bolster.Area() + Slab.Area()) / modRatio);
 
         }
         public double I_Elastic(double modRatio)
         {
             double NA = this.NA(modRatio);
-            return (BotFlange.I_x() + BotFlange.Area() * Math.Pow(BotFlange.CG - NA, 2)
+            return (botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
                     + Web.I_x() + Web.Area() * Math.Pow(Web.CG - NA, 2)
                     + TopFlange.I_x() + TopFlange.Area() * Math.Pow(TopFlange.CG - NA, 2)
                     + (Bolster.I_x() + Bolster.Area() * Math.Pow(Bolster.CG - NA, 2)
@@ -223,7 +225,7 @@ namespace TestObjectClass2
             double width = Convert.ToDouble(Console.ReadLine());
             Console.WriteLine("Enter Bottom Flange Thickness : ");
             double depth = Convert.ToDouble(Console.ReadLine());
-            beamParts.BotFlange = new BotFlange_(width, depth, 50);
+            beamParts.BotFlange = new BotFlange(width, depth, 50);
 
             Console.WriteLine("Enter Web Thickness : ");
             width = Convert.ToDouble(Console.ReadLine());
