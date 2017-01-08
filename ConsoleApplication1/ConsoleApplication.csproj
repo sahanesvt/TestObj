@@ -43,10 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeamParts.cs" />
+    <Compile Include="Bolster.cs" />
     <Compile Include="BotFlange.cs" />
+    <Compile Include="CompositeBeam.cs" />
     <Compile Include="Rectangle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Slab.cs" />
+    <Compile Include="TopFlange.cs" />
     <Compile Include="Web.cs" />
   </ItemGroup>
   <ItemGroup>

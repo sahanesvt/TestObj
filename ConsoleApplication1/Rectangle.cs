@@ -1,4 +1,5 @@
-﻿namespace TestObjectClass2
+﻿
+namespace TestObjectClass2
 {
     public abstract class Rectangle
     {
