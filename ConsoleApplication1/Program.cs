@@ -18,7 +18,7 @@ namespace TestObjectClass2
             width = Convert.ToDouble(Console.ReadLine());
             Console.WriteLine("Enter Web Depth : ");
             depth = Convert.ToDouble(Console.ReadLine());
-            beamParts.web_ = new Web(width, depth, 4);
+            beamParts.web_ = new Web(depth, width, 4);
 
             Console.WriteLine("Enter Top Flange Width : ");
             width = Convert.ToDouble(Console.ReadLine());
@@ -43,6 +43,7 @@ namespace TestObjectClass2
             Console.WriteLine("Beam Area is {0} in^2", Math.Round(beam.Area(8), 4));
             Console.WriteLine("Beam Neutral Axis is {0} in", Math.Round(beam.NA(8), 4));
             Console.WriteLine("Beam Elastic Moment of Inertia is {0} in^4", Math.Round(beam.I_Elastic(8), 4));
+            //Console.WriteLine("Beam Top Flange Section Modulus is {0} in^3", Math.Round(beam.S_top(beam.topFlange_,8), 4));
             Console.Read();
         }
     }

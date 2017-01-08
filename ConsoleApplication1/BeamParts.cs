@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace TestObjectClass2
 {
     public class BeamParts

@@ -47,6 +47,7 @@
     <Compile Include="Bolster.cs" />
     <Compile Include="BotFlange.cs" />
     <Compile Include="CompositeBeam.cs" />
+    <Compile Include="CompositeRectangle.cs" />
     <Compile Include="Rectangle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
