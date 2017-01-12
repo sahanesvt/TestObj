@@ -2,14 +2,16 @@
 
 namespace TestObjectClass2
 {
-    public class Bolster : Rectangle
+    public class Bolster : Plate
     {
+        public Bolster() : base() { }
+
         public Bolster(double width, double depth, double f_c)
             : base(width, depth, f_c)
         {
-            botLocation = 0;
+            BotLocation = 0;
             CG = 0;
-            topLocation = 0;
+            TopLocation = 0;
         }
     }
 }
