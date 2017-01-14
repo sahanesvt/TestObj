@@ -35,17 +35,33 @@ namespace TestObjectClass2
         {
             return x * y;
         }
+        public virtual double Area(double modRatio)
+        {
+            return x * y / modRatio;
+        }
         public virtual double I_x()
         {
             return x * Math.Pow(y, 3) / 12;
+        }
+        public virtual double I_x(double modRatio)
+        {
+            return x * Math.Pow(y, 3) / 12 / modRatio;
         }
         public virtual double I_y()
         {
             return y * Math.Pow(x, 3) / 12;
         }
+        public virtual double I_y(double modRatio)
+        {
+            return y * Math.Pow(x, 3) / 12 / modRatio;
+        }
         public virtual double Force()
         {
             return Area() * Strength;
+        }
+        public virtual double Force(double adjust)
+        {
+            return Area() * Strength * adjust;
         }
 
     }

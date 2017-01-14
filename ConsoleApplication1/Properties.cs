@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestObjectClass2
 {
@@ -11,10 +7,14 @@ namespace TestObjectClass2
 
         public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
         {
-            return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + (bolster.Area() * bolster.CG + slab.Area() * slab.CG) / modRatio)
-                           / (botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area() + slab.Area()) / modRatio);
+            return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG)
+                           / (botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio));
         }
 
+        public static double elasticNeutralAxis(Plate plate)
+        {
+            return plate.y/2;
+        }
 
         public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
         {
@@ -22,8 +22,8 @@ namespace TestObjectClass2
             return (botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
                     + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
                     + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
-                    + (bolster.I_x() + bolster.Area() * Math.Pow(bolster.CG - NA, 2)
-                    + slab.I_x() + slab.Area() * Math.Pow(slab.CG - NA, 2)) / modRatio);
+                    + bolster.I_x() + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2)
+                    + slab.I_x() + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2));
 
         }
 
@@ -147,6 +147,57 @@ namespace TestObjectClass2
             else
             {
                 return botFlange.y + web.y - a[3];
+            }
+        }
+
+        public static double firstMoment_Q(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, double location)
+        {
+            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio);
+            if (NA <= location)
+            {
+                if (location >= slab.BotLocation)
+                {
+                    return slab.Area(modRatio) * (slab.TopLocation - location) / slab.y;
+                }
+                else if (location >= bolster.BotLocation)
+                {
+                    return slab.Area(modRatio) + bolster.Area(modRatio)*(bolster.TopLocation - location) / bolster.y;
+                }
+                else if (location >= topFlange.BotLocation)
+                {
+                    return slab.Area(modRatio) + bolster.Area(modRatio) + topFlange.Area()*(topFlange.TopLocation - location) / topFlange.y;
+                }
+                else if (location >= web.BotLocation)
+                {
+                    return slab.Area(modRatio) + bolster.Area(modRatio) + topFlange.Area() + web.Area()*(web.TopLocation - location) / web.y;
+                }
+                else
+                {
+                    return slab.Area(modRatio) + bolster.Area(modRatio) + topFlange.Area() + web.Area() + botFlange.Area()*(botFlange.TopLocation - location) / botFlange.y;
+                }
+            }
+            else
+            {
+                if (location <= botFlange.TopLocation)
+                {
+                    return botFlange.Area()*(location - botFlange.BotLocation) / botFlange.y;
+                }
+                else if (location <= web.TopLocation)
+                {
+                    return botFlange.Area() + web.Area()*(location - web.BotLocation) / web.y;
+                }
+                else if (location <= topFlange.TopLocation)
+                {
+                    return botFlange.Area() + web.Area() + topFlange.Area()*(location - topFlange.BotLocation) / topFlange.y;
+                }
+                //else if (location <= bolster.TopLocation)
+                //{
+                //    return botFlange.Area() + web.Area() + topFlange.Area() + (location - bolster.BotLocation) * bolster.x / modRatio;
+                //}
+                else
+                {
+                    return botFlange.Area() + web.Area() + topFlange.Area();// + bolster.Area() / modRatio + (location - slab.BotLocation) * slab.x / modRatio;
+                }
             }
         }
     }

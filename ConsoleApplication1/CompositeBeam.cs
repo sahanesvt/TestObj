@@ -151,7 +151,7 @@ namespace TestObjectClass2
 
         public double Area(double modRatio)
         {
-            return BotFlange.Area() + Web.Area() + TopFlange.Area() + (Bolster.Area() + Slab.Area()) / modRatio;
+            return BotFlange.Area() + Web.Area() + TopFlange.Area() + Bolster.Area(modRatio) + Slab.Area(modRatio);
         }
 
         public double NA_Elastc(double modRatio)
