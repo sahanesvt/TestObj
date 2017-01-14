@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TestObjectClass2
 {
@@ -8,6 +9,7 @@ namespace TestObjectClass2
         {
             BeamParts beamParts = new BeamParts();
             //CompositeBeam beam = new CompositeBeam();
+            //List<Reinforcing> reinforcing = new List<Reinforcing>();
 
             Console.WriteLine("Enter Bottom Flange Width : ");
             double width = Convert.ToDouble(Console.ReadLine());
@@ -38,6 +40,18 @@ namespace TestObjectClass2
             Console.WriteLine("Enter Slab Depth : ");
             depth = Convert.ToDouble(Console.ReadLine());
             beamParts.Slab = new Slab(width, depth, 4);
+
+            //Console.WriteLine("Enter Top Reinforcing Area : ");
+            //double area = Convert.ToDouble(Console.ReadLine());
+            //Console.WriteLine("Enter Top Reinforcing Dist to Top of Slab : ");
+            //double distToSlab = Convert.ToDouble(Console.ReadLine());
+            //reinforcing.Add(new Reinforcing(area, distToSlab, 60, true));
+
+            //Console.WriteLine("Enter Bot Reinforcing Area : ");
+            //area = Convert.ToDouble(Console.ReadLine());
+            //Console.WriteLine("Enter Bot Reinforcing Dist to Top of Slab : ");
+            //distToSlab = Convert.ToDouble(Console.ReadLine());
+            //reinforcing.Add(new Reinforcing(area, distToSlab, 60, true));
 
             CompositeBeam beam = new CompositeBeam(beamParts);
 

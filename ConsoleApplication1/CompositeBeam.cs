@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TestObjectClass2
 {
@@ -9,6 +10,7 @@ namespace TestObjectClass2
         private TopFlange tf = new TopFlange();
         private Bolster blst = new Bolster();
         private Slab slb = new Slab();
+        private Reinforcing reinforcing = new Reinforcing(0, 0, 0, true);
 
         public BotFlange BotFlange
         {
@@ -130,6 +132,7 @@ namespace TestObjectClass2
 
             }
         }
+        List<Reinforcing> Reinforcing { get; set; }
 
         public CompositeBeam()
         {
@@ -147,6 +150,7 @@ namespace TestObjectClass2
             TopFlange = beamParts.TopFlange;
             Bolster = beamParts.Bolster;
             Slab = beamParts.Slab;
+            
         }
 
         public double Area(double modRatio)

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace TestObjectClass2
 {
@@ -9,8 +9,9 @@ namespace TestObjectClass2
         private TopFlange tf = new TopFlange();
         private Bolster blst = new Bolster();
         private Slab slb = new Slab();
+        //private Reinforcing reinforcing = new Reinforcing(0, 0, 0, true);
 
-        public BotFlange BotFlange //{ get; set; }
+        public BotFlange BotFlange 
         {
             get { return bf; }
             set
@@ -32,14 +33,9 @@ namespace TestObjectClass2
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
 
-                //bf.BeamBotFlange = value;
-                //bf.BeamWeb = wb;
-                //bf.BeamTopFlange = tf;
-                //bf.BeamBolster = blst;
-                //bf.BeamSlab = slb;
             }
         }
-        public Web Web //{ get; set; }
+        public Web Web 
         {
             get { return wb; }
             set
@@ -61,14 +57,9 @@ namespace TestObjectClass2
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
 
-                //wb.BeamBotFlange = bf;
-                //wb.BeamWeb = value;
-                //wb.BeamTopFlange = tf;
-                //wb.BeamBolster = blst;
-                //wb.BeamSlab = slb;
             }
         }
-        public TopFlange TopFlange //{ get; set; }
+        public TopFlange TopFlange 
         {
             get { return tf; }
             set
@@ -90,14 +81,9 @@ namespace TestObjectClass2
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
 
-                //tf.BeamBotFlange = bf;
-                //tf.BeamWeb = wb;
-                //tf.BeamTopFlange = value;
-                //tf.BeamBolster = blst;
-                //tf.BeamSlab = slb;
             }
         }
-        public Bolster Bolster //{ get; set; }
+        public Bolster Bolster 
         {
             get { return blst; }
             set
@@ -119,14 +105,9 @@ namespace TestObjectClass2
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
 
-                //blst.BeamBotFlange = bf;
-                //blst.BeamWeb = wb;
-                //blst.BeamTopFlange = tf;
-                //blst.BeamBolster = value;
-                //blst.BeamSlab = slb;
             }
         }
-        public Slab Slab //{ get; set; }
+        public Slab Slab 
         {
             get { return slb; }
             set
@@ -148,13 +129,14 @@ namespace TestObjectClass2
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
 
-                //slb.BeamBotFlange = bf;
-                //slb.BeamWeb = wb;
-                //slb.BeamTopFlange = tf;
-                //slb.BeamBolster = blst;
-                //slb.BeamSlab = value;
             }
         }
+        //private List<Reinforcing> reinf;
+        //public List<Reinforcing> Reinf
+        //{
+        //    get { return reinf; }
+        //    set { reinf = value; }
+        //}
 
         public BeamParts()
         {
@@ -163,6 +145,7 @@ namespace TestObjectClass2
             TopFlange = tf;
             Bolster = blst;
             Slab = slb;
+            //Reinf.Add(reinforcing);
         }
 
         public BeamParts(BotFlange botFlange, Web web, TopFlange topFlange, Bolster bolster, Slab slab)
@@ -189,31 +172,6 @@ namespace TestObjectClass2
             Slab.CG = BotFlange.y + Web.y + TopFlange.y + Bolster.y + Slab.y / 2;
             Slab.TopLocation = BotFlange.y + Web.y + TopFlange.y + Bolster.y + Slab.y;
 
-            //BotFlange.BeamBotFlange = BotFlange;
-            //BotFlange.BeamWeb = Web;
-            //BotFlange.BeamTopFlange = TopFlange;
-            //BotFlange.BeamBolster = Bolster;
-            //BotFlange.BeamSlab = Slab;
-            //Web.BeamBotFlange = BotFlange;
-            //Web.BeamWeb = Web;
-            //Web.BeamTopFlange = TopFlange;
-            //Web.BeamBolster = Bolster;
-            //Web.BeamSlab = Slab;
-            //TopFlange.BeamBotFlange = BotFlange;
-            //TopFlange.BeamWeb = Web;
-            //TopFlange.BeamTopFlange = TopFlange;
-            //TopFlange.BeamBolster = Bolster;
-            //TopFlange.BeamSlab = Slab;
-            //Bolster.BeamBotFlange = BotFlange;
-            //Bolster.BeamWeb = Web;
-            //Bolster.BeamTopFlange = TopFlange;
-            //Bolster.BeamBolster = Bolster;
-            //Bolster.BeamSlab = Slab;
-            //Slab.BeamBotFlange = BotFlange;
-            //Slab.BeamWeb = Web;
-            //Slab.BeamTopFlange = TopFlange;
-            //Slab.BeamBolster = Bolster;
-            //Slab.BeamSlab = Slab;
         }
 
     }
