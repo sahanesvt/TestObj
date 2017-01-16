@@ -175,6 +175,11 @@ namespace TestObjectClass2
             return I_Elastic / Math.Abs(NA - location);
         }
 
+        public double Q(double modRatio, double location)
+        {
+            return Properties.firstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,location);
+        }
+
         public double NA_Plastic()
         {
             return Properties.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);

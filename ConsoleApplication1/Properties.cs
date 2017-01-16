@@ -153,51 +153,91 @@ namespace TestObjectClass2
         public static double firstMoment_Q(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, double location)
         {
             double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio);
+            // component {area, dist to location}
+            double[] slabC = { 0, 0 }, bolstC = { 0, 0 }, tFlangeC = { 0, 0 }, webC = { 0, 0 }, bFlangeC = { 0, 0 };
+            double[] tFlangeT = { 0, 0 }, webT = { 0, 0 }, bFlangeT = { 0, 0 };
             if (NA <= location)
             {
                 if (location >= slab.BotLocation)
                 {
-                    return slab.Area(modRatio) * (slab.TopLocation - location) / slab.y;
+                    slabC[0] = slab.Area(modRatio) * (slab.TopLocation - location) / slab.y;
+                    slabC[1] = (slab.TopLocation - location) / 2;
                 }
                 else if (location >= bolster.BotLocation)
                 {
-                    return slab.Area(modRatio) + bolster.Area(modRatio)*(bolster.TopLocation - location) / bolster.y;
+                    slabC[0] = slab.Area(modRatio);
+                    slabC[1] = slab.CG - location;
+                    bolstC[0] = bolster.Area(modRatio)*(bolster.TopLocation - location) / bolster.y;
+                    bolstC[1] = (bolster.TopLocation - location) / 2;
                 }
                 else if (location >= topFlange.BotLocation)
                 {
-                    return slab.Area(modRatio) + bolster.Area(modRatio) + topFlange.Area()*(topFlange.TopLocation - location) / topFlange.y;
+                    slabC[0] = slab.Area(modRatio);
+                    slabC[1] = slab.CG - location;
+                    bolstC[0] = bolster.Area(modRatio);
+                    bolstC[1] = bolster.CG - location;
+                    tFlangeC[0] = topFlange.Area()*(topFlange.TopLocation - location) / topFlange.y;
+                    tFlangeC[1] = (topFlange.TopLocation - location) / 2;
                 }
                 else if (location >= web.BotLocation)
                 {
-                    return slab.Area(modRatio) + bolster.Area(modRatio) + topFlange.Area() + web.Area()*(web.TopLocation - location) / web.y;
+                    slabC[0] = slab.Area(modRatio);
+                    slabC[1] = slab.CG - location;
+                    bolstC[0] = bolster.Area(modRatio);
+                    bolstC[1] = bolster.CG - location;
+                    tFlangeC[0] = topFlange.Area();
+                    tFlangeC[1] = topFlange.CG - location;
+                    webC[0] = web.Area()*(web.TopLocation - location) / web.y;
+                    webC[1] = (web.TopLocation - location) / 2;
                 }
                 else
                 {
-                    return slab.Area(modRatio) + bolster.Area(modRatio) + topFlange.Area() + web.Area() + botFlange.Area()*(botFlange.TopLocation - location) / botFlange.y;
+                    slabC[0] = slab.Area(modRatio);
+                    slabC[1] = slab.CG - location;
+                    bolstC[0] = bolster.Area(modRatio);
+                    bolstC[1] = bolster.CG - location;
+                    tFlangeC[0] = topFlange.Area();
+                    tFlangeC[1] = topFlange.CG - location;
+                    webC[0] = web.Area();
+                    webC[1] = web.CG - location;
+                    bFlangeC[0] =  botFlange.Area()*(botFlange.TopLocation - location) / botFlange.y;
+                    bFlangeC[1] = (botFlange.TopLocation - location) / 2;
                 }
+                return slabC[0] * slabC[1] + bolstC[0] * bolstC[1] + tFlangeC[0] * tFlangeC[1] + webC[0] * webC[1] + bFlangeC[0] * bFlangeC[1];
             }
             else
             {
                 if (location <= botFlange.TopLocation)
                 {
-                    return botFlange.Area()*(location - botFlange.BotLocation) / botFlange.y;
+                    bFlangeT[0] = botFlange.Area()*(location - botFlange.BotLocation) / botFlange.y;
+                    bFlangeT[1] = (location - botFlange.BotLocation) / 2;
                 }
                 else if (location <= web.TopLocation)
                 {
-                    return botFlange.Area() + web.Area()*(location - web.BotLocation) / web.y;
+                    bFlangeT[0] = botFlange.Area();
+                    bFlangeT[1] = location - botFlange.CG;
+                    webT[0] = web.Area()*(location - web.BotLocation) / web.y;
+                    webT[1] = (location - web.BotLocation) / 2;
                 }
                 else if (location <= topFlange.TopLocation)
                 {
-                    return botFlange.Area() + web.Area() + topFlange.Area()*(location - topFlange.BotLocation) / topFlange.y;
+                    bFlangeT[0] = botFlange.Area();
+                    bFlangeT[1] = location - botFlange.CG;
+                    webT[0] = web.Area();
+                    webT[1] = location - web.CG;
+                    tFlangeT[0] = topFlange.Area()*(location - topFlange.BotLocation) / topFlange.y;
+                    tFlangeT[1] = (location - topFlange.BotLocation) / 2;
                 }
-                //else if (location <= bolster.TopLocation)
-                //{
-                //    return botFlange.Area() + web.Area() + topFlange.Area() + (location - bolster.BotLocation) * bolster.x / modRatio;
-                //}
                 else
                 {
-                    return botFlange.Area() + web.Area() + topFlange.Area();// + bolster.Area() / modRatio + (location - slab.BotLocation) * slab.x / modRatio;
+                    bFlangeT[0] = botFlange.Area();
+                    bFlangeT[1] = location - botFlange.CG;
+                    webT[0] = web.Area();
+                    webT[1] = location - web.CG;
+                    tFlangeT[0] = topFlange.Area();
+                    tFlangeT[1] = location - topFlange.CG;
                 }
+                return tFlangeT[0] * tFlangeT[1] + webT[0] * webT[1] + bFlangeT[0] * bFlangeT[1];
             }
         }
     }

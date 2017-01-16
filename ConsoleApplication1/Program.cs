@@ -9,7 +9,6 @@ namespace TestObjectClass2
         {
             BeamParts beamParts = new BeamParts();
             //CompositeBeam beam = new CompositeBeam();
-            //List<Reinforcing> reinforcing = new List<Reinforcing>();
 
             Console.WriteLine("Enter Bottom Flange Width : ");
             double width = Convert.ToDouble(Console.ReadLine());
@@ -41,17 +40,19 @@ namespace TestObjectClass2
             depth = Convert.ToDouble(Console.ReadLine());
             beamParts.Slab = new Slab(width, depth, 4);
 
-            //Console.WriteLine("Enter Top Reinforcing Area : ");
-            //double area = Convert.ToDouble(Console.ReadLine());
-            //Console.WriteLine("Enter Top Reinforcing Dist to Top of Slab : ");
-            //double distToSlab = Convert.ToDouble(Console.ReadLine());
-            //reinforcing.Add(new Reinforcing(area, distToSlab, 60, true));
+            Console.WriteLine("Enter Top Reinforcing Area : ");
+            double area = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("Enter Top Reinforcing Dist to Top of Slab : ");
+            double distToSlab = Convert.ToDouble(Console.ReadLine());
+            Reinforcing topReinf = new Reinforcing(area, 60, distToSlab, true);
+            beamParts.Reinforcing.Add(topReinf);
 
-            //Console.WriteLine("Enter Bot Reinforcing Area : ");
-            //area = Convert.ToDouble(Console.ReadLine());
-            //Console.WriteLine("Enter Bot Reinforcing Dist to Top of Slab : ");
-            //distToSlab = Convert.ToDouble(Console.ReadLine());
-            //reinforcing.Add(new Reinforcing(area, distToSlab, 60, true));
+            Console.WriteLine("Enter Bottom Reinforcing Area : ");
+            area = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("Enter Bottom Reinforcing Dist to Bottom of Slab : ");
+            distToSlab = Convert.ToDouble(Console.ReadLine());
+            Reinforcing botReinf = new Reinforcing(area, 60, distToSlab, false);
+            beamParts.Reinforcing.Add(botReinf);
 
             CompositeBeam beam = new CompositeBeam(beamParts);
 

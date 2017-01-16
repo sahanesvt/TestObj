@@ -7,6 +7,7 @@ namespace TestObjectClass2
         public double x { get; set; }
         public double y { get; set; }
         public double Strength { get; set; }
+        public double ElastMod { get; set; }
         public double BotLocation { get; set; }
         public double CG { get; set; }
         public double TopLocation { get; set; }
@@ -16,6 +17,7 @@ namespace TestObjectClass2
             x = 0;
             y = 0;
             Strength = 0;
+            ElastMod = 0;
             BotLocation = 0;
             CG = 0;
             TopLocation = 0;
@@ -26,10 +28,24 @@ namespace TestObjectClass2
             this.x = x;
             this.y = y;
             Strength = strength;
+            ElastMod = 0;
             BotLocation = 0;
             CG = 0;
             TopLocation = 0;
         }
+
+        public Plate(double x, double y, double strength, double elastMod)
+        {
+            this.x = x;
+            this.y = y;
+            Strength = strength;
+            ElastMod = elastMod;
+            BotLocation = 0;
+            CG = 0;
+            TopLocation = 0;
+        }
+
+
 
         public virtual double Area()
         {

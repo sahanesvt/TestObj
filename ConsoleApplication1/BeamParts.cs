@@ -9,7 +9,12 @@ namespace TestObjectClass2
         private TopFlange tf = new TopFlange();
         private Bolster blst = new Bolster();
         private Slab slb = new Slab();
-        //private Reinforcing reinforcing = new Reinforcing(0, 0, 0, true);
+        private Reinforcing reinf = new Reinforcing(0, 0, 0, true);
+        private List<Reinforcing> reinforcing = new List<Reinforcing>();
+        private void populateReinf()
+        {
+            reinforcing.Add(reinf);
+        }
 
         public BotFlange BotFlange 
         {
@@ -32,6 +37,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach(Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -131,12 +147,7 @@ namespace TestObjectClass2
 
             }
         }
-        //private List<Reinforcing> reinf;
-        //public List<Reinforcing> Reinf
-        //{
-        //    get { return reinf; }
-        //    set { reinf = value; }
-        //}
+        public List<Reinforcing> Reinforcing { get; set; }
 
         public BeamParts()
         {
@@ -145,7 +156,7 @@ namespace TestObjectClass2
             TopFlange = tf;
             Bolster = blst;
             Slab = slb;
-            //Reinf.Add(reinforcing);
+            Reinforcing = reinforcing;
         }
 
         public BeamParts(BotFlange botFlange, Web web, TopFlange topFlange, Bolster bolster, Slab slab)
@@ -155,6 +166,7 @@ namespace TestObjectClass2
             TopFlange = topFlange;
             Bolster = bolster;
             Slab = slab;
+            Reinforcing = reinforcing;
 
             BotFlange.BotLocation = 0;
             BotFlange.CG = BotFlange.y / 2;
