@@ -231,6 +231,7 @@ namespace TestObjectClass2
             TopFlange = tf;
             Bolster = blst;
             Slab = slb;
+            Reinforcing = reinforcing;
         }
 
         public CompositeBeam(BeamParts beamParts)
@@ -240,40 +241,35 @@ namespace TestObjectClass2
             TopFlange = beamParts.TopFlange;
             Bolster = beamParts.Bolster;
             Slab = beamParts.Slab;
-            Reinforcing = reinforcing;
+            Reinforcing = beamParts.Reinforcing;
 
         }
 
-        public double Area(double modRatio)
+        public double Area(double modRatio, bool composite, bool positiveMoment)
         {
-            double reinfArea=0;
-            foreach(Reinforcing reinf in reinforcing)
-            {
-                reinfArea += reinf.Area*(1-modRatio); //remove slab area where reinf exists with (1 - modRatio)
-            }
-            return BotFlange.Area() + Web.Area() + TopFlange.Area() + Bolster.Area(modRatio) + Slab.Area(modRatio) + reinfArea;
+            return Properties.beamArea(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
         }
 
-        public double NA_Elastc(double modRatio)
+        public double NA_Elastc(double modRatio, bool composite, bool positiveMoment)
         {
-            return Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
+            return Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
         }
 
-        public double I_Elastic(double modRatio)
+        public double I_Elastic(double modRatio, bool composite, bool positiveMoment)
         {
-            return Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
+            return Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
         }
 
-        public double S_Elastic(double modRatio, double location)
+        public double S_Elastic(double modRatio, bool composite, bool positiveMoment, double location)
         {
-            double NA = Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
-            double I_Elastic = Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
+            double NA = Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            double I_Elastic = Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
             return I_Elastic / Math.Abs(NA - location);
         }
 
-        public double Q(double modRatio, double location)
+        public double Q(double modRatio, bool composite, bool positiveMoment, double location)
         {
-            return Properties.firstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,location);
+            return Properties.firstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, location);
         }
 
         public double NA_Plastic()
@@ -287,6 +283,25 @@ namespace TestObjectClass2
             double[] bot = Properties.plasticBottom(BotFlange, Web, TopFlange, Bolster, Slab);
 
             return (top[0] * top[1] + bot[0] * bot[1])/12;
+        }
+        public double D_c(double modRatio, bool composite, bool positiveMoment)
+        {
+            double NA = Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            if (positiveMoment)
+            {
+                return Web.TopLocation - NA;
+            }
+            else
+            {
+                return NA - Web.BotLocation;
+            }
+        }
+
+        public double F_crw(double modRatio, bool composite, bool positiveMoment)
+        {
+            double Dc = D_c(modRatio, composite, positiveMoment);
+            double k = 9 / Math.Pow(Dc / Web.y, 2);
+            return Math.Min(0.7 * Web.Strength, 0.9 * Web.ElastMod * k / Math.Pow(Web.y / Web.x, 2));
         }
                 
     }

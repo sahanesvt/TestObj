@@ -5,42 +5,74 @@ namespace TestObjectClass2
 {
     class Properties
     {
-        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
+        private static double[] compositeAndPositiveMoment(bool composite, bool positiveMoment)
         {
-            return botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio);
+            double comp;
+            double posM;
+            double[] array = new double[2];
+            if (composite)
+            {
+                comp = 1;
+                if (positiveMoment)
+                {
+                    posM = 1;
+                }
+                else
+                {
+                    posM = 0;
+                }
+            }
+            else
+            {
+                posM = 0;
+                comp = 0;
+            }
+            array[0] = comp;
+            array[1] = posM;
+            return array;
+        }
+        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
+        {
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            return botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] *array[1];
+
+
         }
 
-        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, List<Reinforcing> reinforcing)
+        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
             double reinfArea = 0;
             foreach (Reinforcing reinf in reinforcing)
             {
-                reinfArea += reinf.Area * (1 - modRatio); //remove slab area where reinf exists with (1 - modRatio)
+                reinfArea += reinf.Area * (1 - array[1] / modRatio); //remove slab area where reinf exists with (1 - 1/modRatio)
             }
-            return botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio) + reinfArea;
+            return botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] * array[1] + reinfArea * array[0];
+
         }
 
-        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
+        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
-            return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG)
-                           / (botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio));
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + (bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG) * array[0] * array[1])
+                               / (botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] * array[1]);
+
         }
 
-        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, List<Reinforcing> reinforcing)
+        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
-            double beamAndSlabNA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio);
-            double beamAndSlabArea = beamArea(botFlange, web, topFlange, bolster, slab, modRatio);
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double beamAndSlabNA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
+            double beamAndSlabArea = beamArea(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
             double reinfAreaTimesLocation = 0;
             double reinfArea = 0;
 
             foreach(Reinforcing reinf in reinforcing)
             {
-                reinfAreaTimesLocation = reinf.Area * (1 - modRatio) * reinf.Location;
-                reinfArea += reinf.Area * (1 - modRatio);
+                reinfAreaTimesLocation += reinf.Area * (1 - array[1] / modRatio) * reinf.Location; //remove slab area where reinf exists with (1 - 1/modRatio)
+                reinfArea += reinf.Area * (1 - array[1] / modRatio); //remove slab area where reinf exists with (1 - 1/modRatio)
             }
-
-
-            return (beamAndSlabArea * beamAndSlabNA + reinfAreaTimesLocation) / (beamAndSlabArea + reinfArea);
+            return (beamAndSlabArea * beamAndSlabNA + reinfAreaTimesLocation * array[0]) / (beamAndSlabArea + reinfArea * array[0]);
         }
 
         public static double elasticNeutralAxis(Plate plate)
@@ -48,33 +80,33 @@ namespace TestObjectClass2
             return plate.y/2;
         }
 
-        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
+        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
-            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio);
-            return (botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
-                    + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
-                    + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
-                    + bolster.I_x() + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2)
-                    + slab.I_x() + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2));
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
+            return botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
+                        + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
+                        + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
+                        + (bolster.I_x(modRatio) + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2) // need to add modRatio to bolster.I_x()
+                        + slab.I_x(modRatio) + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2))*array[0]*array[1]; // need to add modRatio to slab.I_x()
 
         }
 
-        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, List<Reinforcing> reinforcing)
+        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
-            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, reinforcing);
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment, reinforcing);
             double reinfFirstMoment = 0;
             foreach (Reinforcing reinf in reinforcing)
             {
-                reinfFirstMoment += reinf.Area * (1 - modRatio) * Math.Pow(reinf.Location - NA, 2);
+                reinfFirstMoment += reinf.Area * (1 - array[1] / modRatio) * Math.Pow(reinf.Location - NA, 2);
             }
-
-            return (botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
-                    + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
-                    + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
-                    + bolster.I_x() + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2)
-                    + slab.I_x() + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2))
-                    +reinfFirstMoment;
-
+            return botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
+                        + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
+                        + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
+                        + (bolster.I_x(modRatio) + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2) // need to add modRatio to bolster.I_x()
+                        + slab.I_x(modRatio) + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2))*array[0]*array[1] // need to add modRatio to slab.I_x()
+                        + reinfFirstMoment*array[0];
         }
 
         public static double[] plasticVariables(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
@@ -200,9 +232,10 @@ namespace TestObjectClass2
             }
         }
 
-        public static double firstMoment_Q(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, double location)
+        public static double firstMoment_Q(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, double location)
         {
-            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio);
+            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio,composite,positiveMoment);
             // component {area, dist to location}
             double[] slabC = { 0, 0 }, bolstC = { 0, 0 }, tFlangeC = { 0, 0 }, webC = { 0, 0 }, bFlangeC = { 0, 0 };
             double[] tFlangeT = { 0, 0 }, webT = { 0, 0 }, bFlangeT = { 0, 0 };
@@ -210,30 +243,30 @@ namespace TestObjectClass2
             {
                 if (location >= slab.BotLocation)
                 {
-                    slabC[0] = slab.Area(modRatio) * (slab.TopLocation - location) / slab.y;
+                    slabC[0] = slab.Area(modRatio) * (slab.TopLocation - location) / slab.y*array[0]*array[1];
                     slabC[1] = (slab.TopLocation - location) / 2;
                 }
                 else if (location >= bolster.BotLocation)
                 {
-                    slabC[0] = slab.Area(modRatio);
+                    slabC[0] = slab.Area(modRatio) * array[0] * array[1];
                     slabC[1] = slab.CG - location;
-                    bolstC[0] = bolster.Area(modRatio)*(bolster.TopLocation - location) / bolster.y;
+                    bolstC[0] = bolster.Area(modRatio)*(bolster.TopLocation - location) / bolster.y * array[0] * array[1];
                     bolstC[1] = (bolster.TopLocation - location) / 2;
                 }
                 else if (location >= topFlange.BotLocation)
                 {
-                    slabC[0] = slab.Area(modRatio);
+                    slabC[0] = slab.Area(modRatio) * array[0] * array[1];
                     slabC[1] = slab.CG - location;
-                    bolstC[0] = bolster.Area(modRatio);
+                    bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
                     bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area()*(topFlange.TopLocation - location) / topFlange.y;
                     tFlangeC[1] = (topFlange.TopLocation - location) / 2;
                 }
                 else if (location >= web.BotLocation)
                 {
-                    slabC[0] = slab.Area(modRatio);
+                    slabC[0] = slab.Area(modRatio) * array[0] * array[1];
                     slabC[1] = slab.CG - location;
-                    bolstC[0] = bolster.Area(modRatio);
+                    bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
                     bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area();
                     tFlangeC[1] = topFlange.CG - location;
@@ -242,9 +275,9 @@ namespace TestObjectClass2
                 }
                 else
                 {
-                    slabC[0] = slab.Area(modRatio);
+                    slabC[0] = slab.Area(modRatio) * array[0] * array[1];
                     slabC[1] = slab.CG - location;
-                    bolstC[0] = bolster.Area(modRatio);
+                    bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
                     bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area();
                     tFlangeC[1] = topFlange.CG - location;
