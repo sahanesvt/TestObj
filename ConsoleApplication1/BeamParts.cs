@@ -11,10 +11,10 @@ namespace TestObjectClass2
         private Slab slb = new Slab();
         private Reinforcing reinf = new Reinforcing(0, 0, 0, true);
         private List<Reinforcing> reinforcing = new List<Reinforcing>();
-        private void populateReinf()
-        {
-            reinforcing.Add(reinf);
-        }
+        //private void populateReinf()
+        //{
+        //    reinforcing.Add(reinf);
+        //}
 
         public BotFlange BotFlange 
         {
@@ -72,6 +72,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -96,6 +107,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -120,6 +142,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -144,10 +177,55 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
-        public List<Reinforcing> Reinforcing { get; set; }
+        public List<Reinforcing> Reinforcing
+        {
+            get { return reinforcing; }
+            set
+            {
+                reinforcing = value;
+                bf.BotLocation = 0;
+                bf.CG = BotFlange.y / 2;
+                bf.TopLocation = bf.y;
+                wb.BotLocation = bf.y;
+                wb.CG = bf.y + Web.y / 2;
+                wb.TopLocation = bf.y + Web.y;
+                tf.BotLocation = bf.y + wb.y;
+                tf.CG = bf.y + wb.y + tf.y / 2;
+                tf.TopLocation = bf.y + wb.y + tf.y;
+                blst.BotLocation = bf.y + wb.y + tf.y;
+                blst.CG = bf.y + wb.y + tf.y + blst.y / 2;
+                blst.TopLocation = bf.y + wb.y + tf.y + blst.y;
+                slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
+                slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
+                slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
+
+            }
+        }
 
         public BeamParts()
         {

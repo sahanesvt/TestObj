@@ -1,14 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TestObjectClass2
 {
     class Properties
     {
+        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
+        {
+            return botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio);
+        }
+
+        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, List<Reinforcing> reinforcing)
+        {
+            double reinfArea = 0;
+            foreach (Reinforcing reinf in reinforcing)
+            {
+                reinfArea += reinf.Area * (1 - modRatio); //remove slab area where reinf exists with (1 - modRatio)
+            }
+            return botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio) + reinfArea;
+        }
 
         public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio)
         {
             return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG)
                            / (botFlange.Area() + web.Area() + topFlange.Area() + bolster.Area(modRatio) + slab.Area(modRatio));
+        }
+
+        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, List<Reinforcing> reinforcing)
+        {
+            double beamAndSlabNA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio);
+            double beamAndSlabArea = beamArea(botFlange, web, topFlange, bolster, slab, modRatio);
+            double reinfAreaTimesLocation = 0;
+            double reinfArea = 0;
+
+            foreach(Reinforcing reinf in reinforcing)
+            {
+                reinfAreaTimesLocation = reinf.Area * (1 - modRatio) * reinf.Location;
+                reinfArea += reinf.Area * (1 - modRatio);
+            }
+
+
+            return (beamAndSlabArea * beamAndSlabNA + reinfAreaTimesLocation) / (beamAndSlabArea + reinfArea);
         }
 
         public static double elasticNeutralAxis(Plate plate)
@@ -24,6 +56,24 @@ namespace TestObjectClass2
                     + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
                     + bolster.I_x() + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2)
                     + slab.I_x() + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2));
+
+        }
+
+        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, List<Reinforcing> reinforcing)
+        {
+            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, reinforcing);
+            double reinfFirstMoment = 0;
+            foreach (Reinforcing reinf in reinforcing)
+            {
+                reinfFirstMoment += reinf.Area * (1 - modRatio) * Math.Pow(reinf.Location - NA, 2);
+            }
+
+            return (botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
+                    + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
+                    + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
+                    + bolster.I_x() + bolster.Area(modRatio) * Math.Pow(bolster.CG - NA, 2)
+                    + slab.I_x() + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2))
+                    +reinfFirstMoment;
 
         }
 

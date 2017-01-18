@@ -10,7 +10,8 @@ namespace TestObjectClass2
         private TopFlange tf = new TopFlange();
         private Bolster blst = new Bolster();
         private Slab slb = new Slab();
-        private Reinforcing reinforcing = new Reinforcing(0, 0, 0, true);
+        private Reinforcing reinf = new Reinforcing(0, 0, 0, true);
+        private List<Reinforcing> reinforcing = new List<Reinforcing>();
 
         public BotFlange BotFlange
         {
@@ -33,6 +34,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -57,6 +69,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -81,6 +104,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -105,6 +139,17 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
@@ -129,10 +174,55 @@ namespace TestObjectClass2
                 slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
                 slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
                 slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
 
             }
         }
-        List<Reinforcing> Reinforcing { get; set; }
+        public List<Reinforcing> Reinforcing
+        {
+            get { return reinforcing; }
+            set
+            {
+                reinforcing = value;
+                bf.BotLocation = 0;
+                bf.CG = BotFlange.y / 2;
+                bf.TopLocation = bf.y;
+                wb.BotLocation = bf.y;
+                wb.CG = bf.y + Web.y / 2;
+                wb.TopLocation = bf.y + Web.y;
+                tf.BotLocation = bf.y + wb.y;
+                tf.CG = bf.y + wb.y + tf.y / 2;
+                tf.TopLocation = bf.y + wb.y + tf.y;
+                blst.BotLocation = bf.y + wb.y + tf.y;
+                blst.CG = bf.y + wb.y + tf.y + blst.y / 2;
+                blst.TopLocation = bf.y + wb.y + tf.y + blst.y;
+                slb.BotLocation = bf.y + wb.y + tf.y + blst.y;
+                slb.CG = bf.y + wb.y + tf.y + blst.y + slb.y / 2;
+                slb.TopLocation = bf.y + wb.y + tf.y + blst.y + slb.y;
+                foreach (Reinforcing reinf in reinforcing)
+                {
+                    if (reinf.DistToTopOfSlab)
+                    {
+                        reinf.Location = slb.TopLocation - reinf.DistToSlab;
+                    }
+                    else
+                    {
+                        reinf.Location = slb.BotLocation + reinf.DistToSlab;
+                    }
+                }
+
+            }
+        }
 
         public CompositeBeam()
         {
@@ -150,28 +240,34 @@ namespace TestObjectClass2
             TopFlange = beamParts.TopFlange;
             Bolster = beamParts.Bolster;
             Slab = beamParts.Slab;
-            
+            Reinforcing = reinforcing;
+
         }
 
         public double Area(double modRatio)
         {
-            return BotFlange.Area() + Web.Area() + TopFlange.Area() + Bolster.Area(modRatio) + Slab.Area(modRatio);
+            double reinfArea=0;
+            foreach(Reinforcing reinf in reinforcing)
+            {
+                reinfArea += reinf.Area*(1-modRatio); //remove slab area where reinf exists with (1 - modRatio)
+            }
+            return BotFlange.Area() + Web.Area() + TopFlange.Area() + Bolster.Area(modRatio) + Slab.Area(modRatio) + reinfArea;
         }
 
         public double NA_Elastc(double modRatio)
         {
-            return Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio);
+            return Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
         }
 
         public double I_Elastic(double modRatio)
         {
-            return Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio);
+            return Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
         }
 
         public double S_Elastic(double modRatio, double location)
         {
-            double NA = Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio);
-            double I_Elastic = Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio);
+            double NA = Properties.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
+            double I_Elastic = Properties.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio,Reinforcing);
             return I_Elastic / Math.Abs(NA - location);
         }
 
