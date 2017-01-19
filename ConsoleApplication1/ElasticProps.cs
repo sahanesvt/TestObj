@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TestObjectClass2
 {
-    class Properties
+    class ElasticProps
     {
         private static double[] compositeAndPositiveMoment(bool composite, bool positiveMoment)
         {
@@ -31,6 +31,7 @@ namespace TestObjectClass2
             array[1] = posM;
             return array;
         }
+
         public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
             double[] array = compositeAndPositiveMoment(composite, positiveMoment);

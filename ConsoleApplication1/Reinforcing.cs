@@ -15,6 +15,7 @@ namespace TestObjectClass2
         public double DistToSlab { get; set; }
         public bool DistToTopOfSlab { get; set; }
         public double Location { get; set; }
+        public double Force { get; set; }
 
         public Reinforcing()
         {
@@ -23,6 +24,7 @@ namespace TestObjectClass2
             DistToSlab = distToSlab;
             DistToTopOfSlab = distToTopOfSlab;
             Location = location;
+            Force = area * strength;
         }
 
         public Reinforcing(double area, double strength, double distToSlab, bool distToTopOfSlab)
@@ -32,6 +34,7 @@ namespace TestObjectClass2
             DistToSlab = distToSlab;
             DistToTopOfSlab = distToTopOfSlab;
             Location = location;
+            Force = area * strength;
         }
 
         /*public Reinforcing(double area, double strength, double distToSlab, Slab slab, bool distToTopOfSlab)
