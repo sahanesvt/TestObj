@@ -56,12 +56,12 @@ namespace TestObjectClass2
 
             CompositeBeam beam = new CompositeBeam(beamParts);
 
-            Console.WriteLine("Beam Area is {0} in^2", Math.Round(beam.Area(8,true,false), 4));
-            Console.WriteLine("Beam Neutral Axis is {0} in", Math.Round(beam.NA_Elastc(8, true, false), 4));
-            Console.WriteLine("Beam Elastic Moment of Inertia is {0} in^4", Math.Round(beam.I_Elastic(8, true, false), 4));
-            Console.WriteLine("Beam Top Flange Elastic Section Modulus is {0} in^3", Math.Round(beam.S_Elastic(8, true, false, beam.TopFlange.TopLocation),4));
-            Console.WriteLine("Beam Bottom Flange Elastic Section Modulus is {0} in^3", Math.Round(beam.S_Elastic(8, true, false, beam.BotFlange.BotLocation),4));
-            Console.WriteLine("Beam Plastic Neutral Axis is {0} in", Math.Round(beam.NA_Plastic(), 4));
+            Console.WriteLine("Beam Area is {0} in^2", Math.Round(beam.Area(8,true, true), 4));
+            Console.WriteLine("Beam Neutral Axis is {0} in", Math.Round(beam.NA_Elastc(8, true, true), 4));
+            Console.WriteLine("Beam Elastic Moment of Inertia is {0} in^4", Math.Round(beam.I_Elastic(8, true, true), 4));
+            Console.WriteLine("Beam Top Flange Elastic Section Modulus is {0} in^3", Math.Round(beam.S_Elastic(8, true, true, beam.TopFlange.TopLocation),4));
+            Console.WriteLine("Beam Bottom Flange Elastic Section Modulus is {0} in^3", Math.Round(beam.S_Elastic(8, true, true, beam.BotFlange.BotLocation),4));
+            Console.WriteLine("Beam Plastic Neutral Axis is {0} in", Math.Round(beam.NA_Plastic(true,true), 4));
             Console.WriteLine("Beam Plastic Moment is {0} kip-ft", Math.Round(beam.Mp(), 4));
             Console.WriteLine("Top Reinforcing Area = {0} at {1}", Math.Round(beam.Reinforcing[0].Area, 4), Math.Round(beam.Reinforcing[0].Location, 4));
             Console.WriteLine("Bottom Reinforcing Area = {0} at {1}", Math.Round(beam.Reinforcing[1].Area, 4), Math.Round(beam.Reinforcing[1].Location, 4));

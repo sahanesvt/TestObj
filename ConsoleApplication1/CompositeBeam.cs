@@ -272,9 +272,10 @@ namespace TestObjectClass2
             return ElasticProps.firstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, location);
         }
 
-        public double NA_Plastic()
+        public double NA_Plastic(bool composite, bool positiveMoment)
         {
-            return ElasticProps.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);
+            //return ElasticProps.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);
+            return PlasticProps.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, composite, positiveMoment, Reinforcing);
         }
 
         public double Mp()

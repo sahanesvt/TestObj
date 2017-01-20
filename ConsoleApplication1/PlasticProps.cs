@@ -9,11 +9,11 @@ namespace TestObjectClass2
     class PlasticProps
     {
         //known variables
-        static double P_t, b_t, t_t, P_w, D, t_w, P_c, b_c, t_c, P_b, b_b, t_b, P_s, b_s, t_s, Y_bar;
+        //static double P_t, b_t, t_t, P_w, D, t_w, P_c, b_c, t_c, P_b, b_b, t_b, P_s, b_s, t_s, Y_bar;
         //unknown variables
-        static double d_t, d_w, d_c, d_b, d_s, PNA;
+        //static double d_t, d_w, d_c, d_b, d_s, PNA;
 
-        private static double[] compositeAndPositiveMoment(bool composite, bool positiveMoment)
+        private static double[] CompositeAndPositiveMoment(bool composite, bool positiveMoment)
         {
             double comp;
             double posM;
@@ -39,9 +39,127 @@ namespace TestObjectClass2
             array[1] = posM;
             return array;
         }
-        
+
+        private static double PlasticForce (double P_bfC, double P_bfT, double P_wC, double P_wT, double P_tfC, double P_tfT, double P_bolstC, double P_bolstT, double P_sC, double P_sT, double[] P_rebar)
+        {
+            return P_bfC + P_bfT + P_wC + P_wT + P_tfC + P_tfT + P_bolstC + P_bolstT + P_sC + P_sT + P_rebar.Sum();
+        }
+
+        public static double plasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
+        {
+            List<Reinforcing> sortedReinf = reinforcing.OrderByDescending(x => x.Location).ToList();
+            double[] reinfForce = new double[reinforcing.Count];
+            double PNA = 0, increment = 12, force = -1, totalReinfForce = reinforcing.Sum(x => x.Force);
+            double P_bfC = botFlange.Force(), P_bfT = 0, P_wC = web.Force(), P_wT = 0, P_tfC = topFlange.Force(), P_tfT = 0, P_bolstC = bolster.Force(), P_bolstT = 0, P_sC = slab.Force(), P_sT = 0;
+            double plasticForce = -1;// Math.Round(PlasticForce(P_bfC, P_bfT , P_wC , P_wT , P_tfC , P_tfT , P_bolstC , P_bolstT , P_sC , P_sT),6);
+
+            while (plasticForce != 0)
+            {
+                int count = 0;
+                foreach (Reinforcing reinf in sortedReinf)
+                {
+                    if (reinf.Location == PNA)
+                    {
+                        reinfForce[count] = 0;
+                    }
+                    else if (reinf.Location > PNA)
+                    {
+                        reinfForce[count] = -1 * reinf.Force;
+                    }
+                    else
+                    {
+                        reinfForce[count] = reinf.Force;
+                    }
+                    count++;
+                }
+                if (botFlange.TopLocation <= PNA)
+                {
+                    P_bfC = 0;
+                    P_bfT = botFlange.Force();
+                }
+                else
+                {
+                    P_bfC = -1 * botFlange.Force() * (botFlange.TopLocation - PNA) / botFlange.y;
+                    P_bfT = botFlange.Force() * (PNA - botFlange.BotLocation) / botFlange.y;
+                }
+                if (web.TopLocation <= PNA)
+                {
+                    P_wC = 0;
+                    P_wT = web.Force();
+                }
+                else if (web.BotLocation >= PNA)
+                {
+                    P_wC = -1 * web.Force();
+                    P_wT = 0;
+                }
+                else
+                {
+                    P_wC = -1 * web.Force() * (web.TopLocation - PNA) / web.y;
+                    P_wT = web.Force() * (PNA - web.BotLocation) / web.y;
+                }
+                if (topFlange.TopLocation <= PNA)
+                {
+                    P_tfC = 0;
+                    P_tfT = topFlange.Force();
+                }
+                else if (topFlange.BotLocation >= PNA)
+                {
+                    P_tfC = -1 * topFlange.Force();
+                    P_tfT = 0;
+                }
+                else
+                {
+                    P_tfC = -1 * topFlange.Force() * (topFlange.TopLocation - PNA) / topFlange.y;
+                    P_tfT = topFlange.Force() * (PNA - topFlange.BotLocation) / topFlange.y;
+                }
+                if (bolster.TopLocation <= PNA)
+                {
+                    P_bolstC = 0;
+                    P_bolstT = 0;
+                }
+                else if (bolster.BotLocation >= PNA)
+                {
+                    P_bolstC = -1 * bolster.Force(1 / 0.85);
+                    P_bolstT = 0;
+                }
+                else
+                {
+                    P_bolstC = -1 * bolster.Force(1 / 0.85) * (bolster.TopLocation - PNA) / bolster.y;
+                    P_bolstT = 0;
+                }
+                if (slab.TopLocation <= PNA)
+                {
+                    P_sC = 0;
+                    P_sT = 0;
+                }
+                else if (slab.BotLocation >= PNA)
+                {
+                    P_sC = -1 * slab.Force(1 / 0.85);
+                    P_sT = 0;
+                }
+                else
+                {
+                    P_sC = -1 * slab.Force(1 / 0.85) * (slab.TopLocation - PNA) / slab.y;
+                    P_sT = 0;
+                }
+                force = Math.Round(PlasticForce(P_bfC, P_bfT, P_wC, P_wT, P_tfC, P_tfT, P_bolstC, P_bolstT, P_sC, P_sT, reinfForce), 6);
+                if(force == 0) { break; }
+                if (force/plasticForce < 0)
+                {
+                    increment *= -0.5;
+                    PNA += increment;
+                }
+                else
+                {
+                    PNA += increment;
+                }
+                plasticForce = force;
+            }
+            return PNA;
+        }
+
         // define know variables
-        private static void defineVariables(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
+        /*private static void defineVariables(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
             double[] array = compositeAndPositiveMoment(composite, positiveMoment);
 
@@ -55,9 +173,9 @@ namespace TestObjectClass2
                 P_t = topFlange.Force(); b_t = topFlange.x; t_t = topFlange.y; P_w = web.Force(); D = web.y; t_w = web.x; P_c = botFlange.Force(); b_c = botFlange.x; t_c = botFlange.y;
             }
 
-        }
+        }*/
 
-        public static double plasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
+        /*public static double plasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
             defineVariables(botFlange, web, topFlange, bolster, slab, composite, positiveMoment, reinforcing);
             List<Reinforcing> sortedReinf = reinforcing.OrderByDescending(x => x.Location).ToList();
@@ -70,7 +188,7 @@ namespace TestObjectClass2
             }
 
 
-        }
+        }*/
 
         public static double[] plasticVariables(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
@@ -97,7 +215,7 @@ namespace TestObjectClass2
             return a;
         }
 
-        public static double[] plasticTop(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
+        /*public static double[] plasticTop(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
             // return[force, CG]
             double[] a = plasticVariables(botFlange, web, topFlange, bolster, slab), b = new double[2];
@@ -141,9 +259,9 @@ namespace TestObjectClass2
             b[1] = (slabC[0] * slabC[1] + bolstC[0] * bolstC[1] + tFlangeC[0] * tFlangeC[1] + webC[0] * webC[1]) / b[0];
 
             return b;
-        }
+        }*/
 
-        public static double[] plasticBottom(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
+        /*public static double[] plasticBottom(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
             double[] a = plasticVariables(botFlange, web, topFlange, bolster, slab), b = new double[2];
             double PNA = plasticNeutralAxis(botFlange, web, topFlange, bolster, slab);
@@ -181,7 +299,7 @@ namespace TestObjectClass2
 
             return b;
 
-        }
+        }*/
 
         /*public static double plasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
