@@ -247,47 +247,63 @@ namespace TestObjectClass2
 
         public double Area(double modRatio, bool composite, bool positiveMoment)
         {
-            return ElasticProps.beamArea(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            return ElasticProps.BeamArea(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
         }
 
         public double NA_Elastc(double modRatio, bool composite, bool positiveMoment)
         {
-            return ElasticProps.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            return ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
         }
 
         public double I_Elastic(double modRatio, bool composite, bool positiveMoment)
         {
-            return ElasticProps.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            return ElasticProps.ElasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
         }
 
         public double S_Elastic(double modRatio, bool composite, bool positiveMoment, double location)
         {
-            double NA = ElasticProps.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
-            double I_Elastic = ElasticProps.elasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            double NA = ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            double I_Elastic = ElasticProps.ElasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
             return I_Elastic / Math.Abs(NA - location);
         }
 
         public double Q(double modRatio, bool composite, bool positiveMoment, double location)
         {
-            return ElasticProps.firstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, location);
+            return ElasticProps.FirstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, location);
+        }
+
+        public double NA_Plastic()
+        {
+            return ElasticProps.PlasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);
+            
         }
 
         public double NA_Plastic(bool composite, bool positiveMoment)
         {
             //return ElasticProps.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);
-            return PlasticProps.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, composite, positiveMoment, Reinforcing);
+            return PlasticProps.PlasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, composite, positiveMoment, Reinforcing);
         }
 
         public double Mp()
         {
-            double[] top = ElasticProps.plasticTop(BotFlange, Web, TopFlange, Bolster, Slab);
-            double[] bot = ElasticProps.plasticBottom(BotFlange, Web, TopFlange, Bolster, Slab);
-
-            return (top[0] * top[1] + bot[0] * bot[1])/12;
+            double[] top = ElasticProps.PlasticTop(BotFlange, Web, TopFlange, Bolster, Slab);
+            double[] bot = ElasticProps.PlasticBottom(BotFlange, Web, TopFlange, Bolster, Slab);
+            return (top[0] * top[1] + bot[0] * bot[1]) / 12;
         }
+
+        public double Mp(bool composite, bool positiveMoment)
+        {
+            //double[] top = ElasticProps.plasticTop(BotFlange, Web, TopFlange, Bolster, Slab);
+            //double[] bot = ElasticProps.plasticBottom(BotFlange, Web, TopFlange, Bolster, Slab);
+            //return (top[0] * top[1] + bot[0] * bot[1])/12;
+
+            return PlasticProps.PlasticMoment(BotFlange, Web, TopFlange, Bolster, Slab, composite, positiveMoment, Reinforcing);
+
+        }
+
         public double D_c(double modRatio, bool composite, bool positiveMoment)
         {
-            double NA = ElasticProps.elasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            double NA = ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
             if (positiveMoment)
             {
                 return Web.TopLocation - NA;

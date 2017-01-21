@@ -5,7 +5,7 @@ namespace TestObjectClass2
 {
     class ElasticProps
     {
-        private static double[] compositeAndPositiveMoment(bool composite, bool positiveMoment)
+        private static double[] CompositeAndPositiveMoment(bool composite, bool positiveMoment)
         {
             double comp;
             double posM;
@@ -32,17 +32,17 @@ namespace TestObjectClass2
             return array;
         }
 
-        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
+        public static double BeamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
             return botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] *array[1];
 
 
         }
 
-        public static double beamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
+        public static double BeamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
             double reinfArea = 0;
             foreach (Reinforcing reinf in reinforcing)
             {
@@ -52,19 +52,19 @@ namespace TestObjectClass2
 
         }
 
-        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
+        public static double ElasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
             return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + (bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG) * array[0] * array[1])
                                / (botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] * array[1]);
 
         }
 
-        public static double elasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
+        public static double ElasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
-            double beamAndSlabNA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
-            double beamAndSlabArea = beamArea(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            double beamAndSlabNA = ElasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
+            double beamAndSlabArea = BeamArea(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
             double reinfAreaTimesLocation = 0;
             double reinfArea = 0;
 
@@ -76,15 +76,15 @@ namespace TestObjectClass2
             return (beamAndSlabArea * beamAndSlabNA + reinfAreaTimesLocation * array[0]) / (beamAndSlabArea + reinfArea * array[0]);
         }
 
-        public static double elasticNeutralAxis(Plate plate)
+        public static double ElasticNeutralAxis(Plate plate)
         {
             return plate.y/2;
         }
 
-        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
+        public static double ElasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
-            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            double NA = ElasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment);
             return botFlange.I_x() + botFlange.Area() * Math.Pow(botFlange.CG - NA, 2)
                         + web.I_x() + web.Area() * Math.Pow(web.CG - NA, 2)
                         + topFlange.I_x() + topFlange.Area() * Math.Pow(topFlange.CG - NA, 2)
@@ -93,10 +93,10 @@ namespace TestObjectClass2
 
         }
 
-        public static double elasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
+        public static double ElasticMomentOfInertia(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, List<Reinforcing> reinforcing)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
-            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment, reinforcing);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            double NA = ElasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio, composite, positiveMoment, reinforcing);
             double reinfFirstMoment = 0;
             foreach (Reinforcing reinf in reinforcing)
             {
@@ -109,8 +109,9 @@ namespace TestObjectClass2
                         + slab.I_x(modRatio) + slab.Area(modRatio) * Math.Pow(slab.CG - NA, 2))*array[0]*array[1] // need to add modRatio to slab.I_x()
                         + reinfFirstMoment*array[0];
         }
-
-        public static double[] plasticVariables(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
+        
+        //REMOVE PLASTIC PROPERTIES FROM ELASTIC PROPERTIES CLASS!!!
+        public static double[] PlasticVariables(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
             double[] a = new double[4];
             // dist to PNA from top of slab if located in slab
@@ -125,11 +126,11 @@ namespace TestObjectClass2
             return a;
         }
 
-        public static double[] plasticTop(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
+        public static double[] PlasticTop(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
             // return[force, CG]
-            double[] a = plasticVariables(botFlange, web, topFlange, bolster, slab), b = new double[2];
-            double PNA = plasticNeutralAxis(botFlange, web, topFlange, bolster, slab);
+            double[] a = PlasticVariables(botFlange, web, topFlange, bolster, slab), b = new double[2];
+            double PNA = PlasticNeutralAxis(botFlange, web, topFlange, bolster, slab);
             // component {force, dist to PNA}
             double[] slabC = { 0, 0 }, bolstC = { 0, 0 }, tFlangeC = { 0, 0 }, webC = { 0, 0 };
             if (a[0] <= slab.y)
@@ -171,10 +172,10 @@ namespace TestObjectClass2
             return b;
         }
 
-        public static double[] plasticBottom(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
+        public static double[] PlasticBottom(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
-            double[] a = plasticVariables(botFlange, web, topFlange, bolster, slab), b = new double[2];
-            double PNA = plasticNeutralAxis(botFlange, web, topFlange, bolster, slab);
+            double[] a = PlasticVariables(botFlange, web, topFlange, bolster, slab), b = new double[2];
+            double PNA = PlasticNeutralAxis(botFlange, web, topFlange, bolster, slab);
             // component {force, dist to PNA}
             double[] slabT = { 0, 0 }, bolstT = { 0, 0 }, tFlangeT = { 0, 0 }, webT = { 0, 0 }, bFlangeT = { 0, 0 };
             if (a[0] <= slab.y | a[1] <= bolster.y)
@@ -211,9 +212,9 @@ namespace TestObjectClass2
 
         }
 
-        public static double plasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
+        public static double PlasticNeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab)
         {
-            double[] a = plasticVariables(botFlange, web, topFlange, bolster, slab);
+            double[] a = PlasticVariables(botFlange, web, topFlange, bolster, slab);
 
             if (a[0] <= slab.y)
             {
@@ -232,11 +233,12 @@ namespace TestObjectClass2
                 return botFlange.y + web.y - a[3];
             }
         }
+        //REMOVE PLASTIC PROPERTIES FROM ELASTIC PROPERTIES CLASS!!!
 
-        public static double firstMoment_Q(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, double location)
+        public static double FirstMoment_Q(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment, double location)
         {
-            double[] array = compositeAndPositiveMoment(composite, positiveMoment);
-            double NA = elasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio,composite,positiveMoment);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            double NA = ElasticNeutralAxis(botFlange, web, topFlange, bolster, slab, modRatio,composite,positiveMoment);
             // component {area, dist to location}
             double[] slabC = { 0, 0 }, bolstC = { 0, 0 }, tFlangeC = { 0, 0 }, webC = { 0, 0 }, bFlangeC = { 0, 0 };
             double[] tFlangeT = { 0, 0 }, webT = { 0, 0 }, bFlangeT = { 0, 0 };
