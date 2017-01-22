@@ -111,6 +111,7 @@ namespace TestObjectClass2
             Console.WriteLine("Beam Plastic Moment is {0} kip-ft", Math.Round(beam.Mp(composite, positiveMoment), 4));
             //Console.WriteLine("Beam Plastic Neutral Axis is {0} in", Math.Round(beam.NA_Plastic(), 4));
             //Console.WriteLine("Beam Plastic Moment is {0} kip-ft", Math.Round(beam.Mp(), 4));
+            Console.WriteLine("Q/I is {0}", Math.Round(beam.Q(8,composite,positiveMoment,beam.TopFlange.TopLocation)/beam.I_Elastic(8,composite,positiveMoment), 4));
             Console.WriteLine("Top Reinforcing Area = {0} at {1}", Math.Round(beam.Reinforcing[0].Area, 4), Math.Round(beam.Reinforcing[0].Location, 4));
             Console.WriteLine("Bottom Reinforcing Area = {0} at {1}", Math.Round(beam.Reinforcing[1].Area, 4), Math.Round(beam.Reinforcing[1].Location, 4));
             Console.Read();
