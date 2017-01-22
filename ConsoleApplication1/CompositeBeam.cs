@@ -247,23 +247,23 @@ namespace TestObjectClass2
 
         public double Area(double modRatio, bool composite, bool positiveMoment)
         {
-            return ElasticProps.BeamArea(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            return ElasticProps.BeamArea(this, modRatio, composite, positiveMoment);
         }
 
-        public double NA_Elastc(double modRatio, bool composite, bool positiveMoment)
+        public double NA_Elastic(double modRatio, bool composite, bool positiveMoment)
         {
-            return ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            return ElasticProps.ElasticNeutralAxis(this, modRatio, composite, positiveMoment);
         }
 
         public double I_Elastic(double modRatio, bool composite, bool positiveMoment)
         {
-            return ElasticProps.ElasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            return ElasticProps.ElasticMomentOfInertia(this, modRatio, composite, positiveMoment);
         }
 
         public double S_Elastic(double modRatio, bool composite, bool positiveMoment, double location)
         {
-            double NA = ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
-            double I_Elastic = ElasticProps.ElasticMomentOfInertia(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            double NA = ElasticProps.ElasticNeutralAxis(this, modRatio, composite, positiveMoment);
+            double I_Elastic = ElasticProps.ElasticMomentOfInertia(this, modRatio, composite, positiveMoment);
             return I_Elastic / Math.Abs(NA - location);
         }
 
@@ -272,38 +272,32 @@ namespace TestObjectClass2
             return ElasticProps.FirstMoment_Q(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, location);
         }
 
-        public double NA_Plastic()
+        /*public double NA_Plastic()
         {
             return ElasticProps.PlasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);
             
-        }
+        }*/
 
         public double NA_Plastic(bool composite, bool positiveMoment)
         {
-            //return ElasticProps.plasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab);
-            return PlasticProps.PlasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, composite, positiveMoment, Reinforcing);
+            return PlasticProps.PlasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, Reinforcing, composite, positiveMoment);
         }
 
-        public double Mp()
+        /*public double Mp()
         {
             double[] top = ElasticProps.PlasticTop(BotFlange, Web, TopFlange, Bolster, Slab);
             double[] bot = ElasticProps.PlasticBottom(BotFlange, Web, TopFlange, Bolster, Slab);
             return (top[0] * top[1] + bot[0] * bot[1]) / 12;
-        }
+        }*/
 
         public double Mp(bool composite, bool positiveMoment)
         {
-            //double[] top = ElasticProps.plasticTop(BotFlange, Web, TopFlange, Bolster, Slab);
-            //double[] bot = ElasticProps.plasticBottom(BotFlange, Web, TopFlange, Bolster, Slab);
-            //return (top[0] * top[1] + bot[0] * bot[1])/12;
-
-            return PlasticProps.PlasticMoment(BotFlange, Web, TopFlange, Bolster, Slab, composite, positiveMoment, Reinforcing);
-
+            return PlasticProps.PlasticMoment(BotFlange, Web, TopFlange, Bolster, Slab, Reinforcing, composite, positiveMoment);
         }
 
         public double D_c(double modRatio, bool composite, bool positiveMoment)
         {
-            double NA = ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, modRatio, composite, positiveMoment, Reinforcing);
+            double NA = ElasticProps.ElasticNeutralAxis(BotFlange, Web, TopFlange, Bolster, Slab, Reinforcing, modRatio, composite, positiveMoment);
             if (positiveMoment)
             {
                 return Web.TopLocation - NA;
