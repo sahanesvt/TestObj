@@ -9,6 +9,7 @@ namespace TestObjectClass2
         {
             BeamParts beamParts = new BeamParts();
             //CompositeBeam beam = new CompositeBeam();
+            List<Force> forces = new List<Force>();
 
             Console.WriteLine("Enter Bottom Flange Width : ");
             double width = Convert.ToDouble(Console.ReadLine());
@@ -100,6 +101,18 @@ namespace TestObjectClass2
                     break;
             }
 
+            Console.WriteLine("Enter Non-composite Dead Load Moment : ");
+            double M_D1 = Convert.ToDouble(Console.ReadLine());
+            forces.Add(new Force(M_D1, 0, 0,8,false));
+
+            Console.WriteLine("Enter Composite Dead Load Moment : ");
+            double M_D2 = Convert.ToDouble(Console.ReadLine());
+            forces.Add(new Force(M_D2, 0, 0, 24, true));
+
+            Console.WriteLine("Enter Composite Live Load Moment : ");
+            double M_LL = Convert.ToDouble(Console.ReadLine());
+            forces.Add(new Force(M_LL, 0, 0, 8, true));
+
             CompositeBeam beam = new CompositeBeam(beamParts);
 
             Console.WriteLine("Beam Area is {0} in^2", Math.Round(beam.Area(8, composite, positiveMoment), 4));
@@ -114,7 +127,9 @@ namespace TestObjectClass2
             Console.WriteLine("Q/I is {0}", Math.Round(beam.Q(8,composite,positiveMoment,beam.TopFlange.TopLocation)/beam.I_Elastic(8,composite,positiveMoment), 4));
             Console.WriteLine("Top Reinforcing Area = {0} at {1}", Math.Round(beam.Reinforcing[0].Area, 4), Math.Round(beam.Reinforcing[0].Location, 4));
             Console.WriteLine("Bottom Reinforcing Area = {0} at {1}", Math.Round(beam.Reinforcing[1].Area, 4), Math.Round(beam.Reinforcing[1].Location, 4));
+            Console.WriteLine("Top flange stress = {0}, Bottom flange stress = {1}", Math.Round(ElasticProps.BeamStresses(forces,beam)[3], 4), Math.Round(ElasticProps.BeamStresses(forces, beam)[0], 4));
             Console.Read();
         }
     }
 }
+

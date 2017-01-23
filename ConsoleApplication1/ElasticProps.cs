@@ -714,8 +714,25 @@ namespace TestObjectClass2
                 f_slab = -1 * posNeg * Stress(Math.Abs(moment), compositeBeam, modRatio, composite, posMom, compositeBeam.Slab.TopLocation);
             }
 
-            double[] stresss = new double[5] { f_bf, f_wb, f_wt, f_tf, f_slab };
-            return stresss;
+            double[] stresses = new double[5] { f_bf, f_wb, f_wt, f_tf, f_slab };
+            return stresses;
+        }
+
+        public static double[] BeamStresses(List<Force> forces, CompositeBeam compositeBeam)
+        {
+            double f_bf = 0, f_wb = 0, f_wt = 0, f_tf = 0, f_slab = 0;
+            double[] stresses;
+            foreach (Force force in forces)
+            {
+                stresses = BeamStresses(force.Moment, compositeBeam, force.ModRatio, force.Composite);
+                f_bf += stresses[0];
+                f_wb += stresses[1];
+                f_wt += stresses[2];
+                f_tf += stresses[3];
+                f_slab += stresses[4];
+            }
+            stresses = new double[5] { f_bf, f_wb, f_wt, f_tf, f_slab };
+            return stresses;
         }
 
         public static double WebCompression_Dc(double moment, CompositeBeam compositeBeam, double modRatio, bool composite, bool positiveMoment)

@@ -46,9 +46,9 @@
     <Compile Include="BeamParts.cs" />
     <Compile Include="Bolster.cs" />
     <Compile Include="BotFlange.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="CompositeBeam.cs" />
     <Compile Include="CompositeRectangle.cs" />
+    <Compile Include="Forces.cs" />
     <Compile Include="PlasticProps.cs" />
     <Compile Include="Plate.cs" />
     <Compile Include="Program.cs" />
