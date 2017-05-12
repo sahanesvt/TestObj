@@ -457,56 +457,56 @@ namespace TestObjectClass2
                 
                 foreach (Reinforcing reinf in reinforcing)
                 {
-                    if (location >= reinf.Location)
+                    if (location <= reinf.Location)
                     {
-                        reinfFirstMoment += reinf.Area * (1 - array[1] / modRatio) * (reinf.Location - NA);
+                        reinfFirstMoment += reinf.Area * (1 - array[1] / modRatio) * (reinf.Location - location);
                     }
                 }
 
                 if (location >= slab.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * (slab.TopLocation - location) / slab.y * array[0] * array[1];
-                    slabC[1] = (slab.TopLocation - NA) / 2;
+                    slabC[1] = (slab.TopLocation - location) / 2;
                 }
                 else if (location >= bolster.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * (bolster.TopLocation - location) / bolster.y * array[0] * array[1];
-                    bolstC[1] = (bolster.TopLocation - NA) / 2;
+                    bolstC[1] = (bolster.TopLocation - location) / 2;
                 }
                 else if (location >= topFlange.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
-                    bolstC[1] = bolster.CG - NA;
+                    bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area() * (topFlange.TopLocation - location) / topFlange.y;
-                    tFlangeC[1] = (topFlange.TopLocation - NA) / 2;
+                    tFlangeC[1] = (topFlange.TopLocation - location) / 2;
                 }
                 else if (location >= web.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
-                    bolstC[1] = bolster.CG - NA;
+                    bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area();
-                    tFlangeC[1] = topFlange.CG - NA;
+                    tFlangeC[1] = topFlange.CG - location;
                     webC[0] = web.Area() * (web.TopLocation - location) / web.y;
-                    webC[1] = (web.TopLocation - NA) / 2;
+                    webC[1] = (web.TopLocation - location) / 2;
                 }
                 else
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
-                    bolstC[1] = bolster.CG - NA;
+                    bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area();
-                    tFlangeC[1] = topFlange.CG - NA;
+                    tFlangeC[1] = topFlange.CG - location;
                     webC[0] = web.Area();
-                    webC[1] = web.CG - NA;
+                    webC[1] = web.CG - location;
                     bFlangeC[0] = botFlange.Area() * (botFlange.TopLocation - location) / botFlange.y;
-                    bFlangeC[1] = (botFlange.TopLocation - NA) / 2;
+                    bFlangeC[1] = (botFlange.TopLocation - location) / 2;
                 }
                 return slabC[0] * slabC[1] + bolstC[0] * bolstC[1] + tFlangeC[0] * tFlangeC[1] + webC[0] * webC[1] + bFlangeC[0] * bFlangeC[1] 
                         + reinfFirstMoment * array[0];
@@ -516,32 +516,32 @@ namespace TestObjectClass2
                 if (location <= botFlange.TopLocation)
                 {
                     bFlangeT[0] = botFlange.Area() * (location - botFlange.BotLocation) / botFlange.y;
-                    bFlangeT[1] = (NA - botFlange.BotLocation) / 2;
+                    bFlangeT[1] = (location - botFlange.BotLocation) / 2;
                 }
                 else if (location <= web.TopLocation)
                 {
                     bFlangeT[0] = botFlange.Area();
-                    bFlangeT[1] = NA - botFlange.CG;
+                    bFlangeT[1] = location - botFlange.CG;
                     webT[0] = web.Area() * (location - web.BotLocation) / web.y;
-                    webT[1] = (NA - web.BotLocation) / 2;
+                    webT[1] = (location - web.BotLocation) / 2;
                 }
                 else if (location <= topFlange.TopLocation)
                 {
                     bFlangeT[0] = botFlange.Area();
-                    bFlangeT[1] = NA - botFlange.CG;
+                    bFlangeT[1] = location - botFlange.CG;
                     webT[0] = web.Area();
-                    webT[1] = NA - web.CG;
+                    webT[1] = location - web.CG;
                     tFlangeT[0] = topFlange.Area() * (location - topFlange.BotLocation) / topFlange.y;
-                    tFlangeT[1] = (NA - topFlange.BotLocation) / 2;
+                    tFlangeT[1] = (location - topFlange.BotLocation) / 2;
                 }
                 else
                 {
                     bFlangeT[0] = botFlange.Area();
-                    bFlangeT[1] = NA - botFlange.CG;
+                    bFlangeT[1] = location - botFlange.CG;
                     webT[0] = web.Area();
-                    webT[1] = NA - web.CG;
+                    webT[1] = location - web.CG;
                     tFlangeT[0] = topFlange.Area();
-                    tFlangeT[1] = NA - topFlange.CG;
+                    tFlangeT[1] = location - topFlange.CG;
                 }
                 return tFlangeT[0] * tFlangeT[1] + webT[0] * webT[1] + bFlangeT[0] * bFlangeT[1];
             }
@@ -561,56 +561,56 @@ namespace TestObjectClass2
 
                 foreach (Reinforcing reinf in compositeBeam.Reinforcing)
                 {
-                    if (location >= reinf.Location)
+                    if (location <= reinf.Location)
                     {
-                        reinfFirstMoment += reinf.Area * (1 - array[1] / modRatio) * (reinf.Location - NA);
+                        reinfFirstMoment += reinf.Area * (1 - array[1] / modRatio) * (reinf.Location - location);
                     }
                 }
 
                 if (location >= compositeBeam.Slab.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * (slab.TopLocation - location) / slab.y * array[0] * array[1];
-                    slabC[1] = (slab.TopLocation - NA) / 2;
+                    slabC[1] = (slab.TopLocation - location) / 2;
                 }
                 else if (location >= bolster.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * (bolster.TopLocation - location) / bolster.y * array[0] * array[1];
-                    bolstC[1] = (bolster.TopLocation - NA) / 2;
+                    bolstC[1] = (bolster.TopLocation - location) / 2;
                 }
                 else if (location >= topFlange.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
-                    bolstC[1] = bolster.CG - NA;
+                    bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area() * (topFlange.TopLocation - location) / topFlange.y;
-                    tFlangeC[1] = (topFlange.TopLocation - NA) / 2;
+                    tFlangeC[1] = (topFlange.TopLocation - location) / 2;
                 }
                 else if (location >= web.BotLocation)
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
-                    bolstC[1] = bolster.CG - NA;
+                    bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area();
-                    tFlangeC[1] = topFlange.CG - NA;
+                    tFlangeC[1] = topFlange.CG - location;
                     webC[0] = web.Area() * (web.TopLocation - location) / web.y;
-                    webC[1] = (web.TopLocation - NA) / 2;
+                    webC[1] = (web.TopLocation - location) / 2;
                 }
                 else
                 {
                     slabC[0] = slab.Area(modRatio) * array[0] * array[1];
-                    slabC[1] = slab.CG - NA;
+                    slabC[1] = slab.CG - location;
                     bolstC[0] = bolster.Area(modRatio) * array[0] * array[1];
-                    bolstC[1] = bolster.CG - NA;
+                    bolstC[1] = bolster.CG - location;
                     tFlangeC[0] = topFlange.Area();
-                    tFlangeC[1] = topFlange.CG - NA;
+                    tFlangeC[1] = topFlange.CG - location;
                     webC[0] = web.Area();
-                    webC[1] = web.CG - NA;
+                    webC[1] = web.CG - location;
                     bFlangeC[0] = botFlange.Area() * (botFlange.TopLocation - location) / botFlange.y;
-                    bFlangeC[1] = (botFlange.TopLocation - NA) / 2;
+                    bFlangeC[1] = (botFlange.TopLocation - location) / 2;
                 }
                 return slabC[0] * slabC[1] + bolstC[0] * bolstC[1] + tFlangeC[0] * tFlangeC[1] + webC[0] * webC[1] + bFlangeC[0] * bFlangeC[1]
                         + reinfFirstMoment * array[0];
@@ -620,32 +620,32 @@ namespace TestObjectClass2
                 if (location <= botFlange.TopLocation)
                 {
                     bFlangeT[0] = botFlange.Area() * (location - botFlange.BotLocation) / botFlange.y;
-                    bFlangeT[1] = (NA - botFlange.BotLocation) / 2;
+                    bFlangeT[1] = (location - botFlange.BotLocation) / 2;
                 }
                 else if (location <= web.TopLocation)
                 {
                     bFlangeT[0] = botFlange.Area();
-                    bFlangeT[1] = NA - botFlange.CG;
+                    bFlangeT[1] = location - botFlange.CG;
                     webT[0] = web.Area() * (location - web.BotLocation) / web.y;
-                    webT[1] = (NA - web.BotLocation) / 2;
+                    webT[1] = (location - web.BotLocation) / 2;
                 }
                 else if (location <= topFlange.TopLocation)
                 {
                     bFlangeT[0] = botFlange.Area();
-                    bFlangeT[1] = NA - botFlange.CG;
+                    bFlangeT[1] = location - botFlange.CG;
                     webT[0] = web.Area();
-                    webT[1] = NA - web.CG;
+                    webT[1] = location - web.CG;
                     tFlangeT[0] = topFlange.Area() * (location - topFlange.BotLocation) / topFlange.y;
-                    tFlangeT[1] = (NA - topFlange.BotLocation) / 2;
+                    tFlangeT[1] = (location - topFlange.BotLocation) / 2;
                 }
                 else
                 {
                     bFlangeT[0] = botFlange.Area();
-                    bFlangeT[1] = NA - botFlange.CG;
+                    bFlangeT[1] = location - botFlange.CG;
                     webT[0] = web.Area();
-                    webT[1] = NA - web.CG;
+                    webT[1] = location - web.CG;
                     tFlangeT[0] = topFlange.Area();
-                    tFlangeT[1] = NA - topFlange.CG;
+                    tFlangeT[1] = location - topFlange.CG;
                 }
                 return tFlangeT[0] * tFlangeT[1] + webT[0] * webT[1] + bFlangeT[0] * bFlangeT[1];
             }
