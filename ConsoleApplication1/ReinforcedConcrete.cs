@@ -8,7 +8,7 @@ namespace TestObjectClass2
 {
     public class ReinforcedConcrete : Material
     {
-        private double _g_c_for_mod = 0;
+        private double _fc = 0, _K_1=1, _g_c_for_mod = 0;    
         private bool _mod_by_commentary = true;
 
         public bool ModulusByLRFDCommentary
@@ -24,20 +24,20 @@ namespace TestObjectClass2
                 calc_E_c(_mod_by_commentary);
             }
         }
-        public double f_c
+        public double fc
         {
           get
             {
-                return base.CompressiveStrength;
+                return _fc;
             }
           set
             {
-                f_c = value;
-                base.CompressiveStrength = f_c;
+                _fc = value;
+                //base.CompressiveStrength = f_c;
                 calc_E_c(_mod_by_commentary);
             }
         }
-        public override double CompressiveStrength
+        /*public override double CompressiveStrength
         {
             get
             {
@@ -50,7 +50,7 @@ namespace TestObjectClass2
                 f_c = base.CompressiveStrength;
                 calc_E_c(_mod_by_commentary);
             }
-        }
+        }*/
         public double g_c_forWeight
         {
             get
@@ -122,12 +122,23 @@ namespace TestObjectClass2
                 E_c = base.ModulusOfElasticity;
             }
         }
-        public double K_1 { get; set; } = 1;
+        public double K_1
+        {
+            get
+            {
+                return _K_1;
+            }
+            set
+            {
+                _K_1 = value;
+                calc_E_c(_mod_by_commentary);
+            }
+        } 
         private void calc_E_c(bool LRFD_Commentary)
         {
             if (LRFD_Commentary)
             {
-                E_c = 1820 * Math.Sqrt(f_c);
+                E_c = 1820 * Math.Sqrt(_fc);
             }
             else
             {
@@ -141,7 +152,7 @@ namespace TestObjectClass2
                     g_c = g_c_forModulus;
                 }
 
-                E_c = 33000 * K_1 * Math.Pow(g_c, 1.5) * Math.Sqrt(f_c);
+                E_c = 33000 * _K_1 * Math.Pow(g_c, 1.5) * Math.Sqrt(_fc);
             }
         }
 

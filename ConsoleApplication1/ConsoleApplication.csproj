@@ -58,6 +58,7 @@
     <Compile Include="ReinforcedConcrete.cs" />
     <Compile Include="Reinforcing.cs" />
     <Compile Include="Slab.cs" />
+    <Compile Include="StructuralSteel.cs" />
     <Compile Include="TopFlange.cs" />
     <Compile Include="Web.cs" />
   </ItemGroup>
