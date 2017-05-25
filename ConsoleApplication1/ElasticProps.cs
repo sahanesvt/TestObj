@@ -34,20 +34,24 @@ namespace TestObjectClass2
 
         public static double BeamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, bool positiveMoment)
         {
-            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
-            return botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] *array[1];
+            List<Reinforcing> reinf = new List<Reinforcing>();
+            return BeamArea(botFlange, web, topFlange, bolster, slab, reinf, modRatio, composite, positiveMoment);
+            //double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            //return botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] *array[1];
         }
 
         public static double BeamArea(CompositeBeam compositeBeam, double modRatio, bool composite, bool positiveMoment)
         {
-            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            return BeamArea(compositeBeam.BotFlange, compositeBeam.Web, compositeBeam.TopFlange, compositeBeam.Bolster, compositeBeam.Slab, 
+                compositeBeam.Reinforcing, modRatio, composite, positiveMoment);
+            /*double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
             double reinfArea = 0;
             foreach (Reinforcing reinf in compositeBeam.Reinforcing)
             {
                 reinfArea += reinf.Area * (1 - array[1] / modRatio); //remove slab area where reinf exists with (1 - 1/modRatio)
             }
             return compositeBeam.BotFlange.Area() + compositeBeam.Web.Area() + compositeBeam.TopFlange.Area() + (compositeBeam.Bolster.Area(modRatio) 
-                    + compositeBeam.Slab.Area(modRatio)) * array[0] * array[1] + reinfArea * array[0];
+                    + compositeBeam.Slab.Area(modRatio)) * array[0] * array[1] + reinfArea * array[0];*/
         }
 
         public static double BeamArea(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, List<Reinforcing> reinforcing, double modRatio, 
