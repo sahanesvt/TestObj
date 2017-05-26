@@ -71,12 +71,12 @@ namespace TestObjectClass2
         public static double NeutralAxis(Plate botFlange, Plate web, Plate topFlange, Plate bolster, Plate slab, double modRatio, bool composite, 
                                         bool positiveMoment)
         {
-            List<Reinforcing> reinforcing = new List<Reinforcing>();
-            return NeutralAxis(botFlange, web, topFlange, bolster, slab, reinforcing, modRatio, composite, positiveMoment);
+            //List<Reinforcing> reinforcing = new List<Reinforcing>(); 
+            //return NeutralAxis(botFlange, web, topFlange, bolster, slab, reinforcing, modRatio, composite, positiveMoment);  NG!! Causes circular logic!!
 
-            //double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
-            //return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + (bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG) * array[0] * array[1])
-            //                   / (botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] * array[1]);
+            double[] array = CompositeAndPositiveMoment(composite, positiveMoment);
+            return (botFlange.Area() * botFlange.CG + web.Area() * web.CG + topFlange.Area() * topFlange.CG + (bolster.Area(modRatio) * bolster.CG + slab.Area(modRatio) * slab.CG) * array[0] * array[1])
+                               / (botFlange.Area() + web.Area() + topFlange.Area() + (bolster.Area(modRatio) + slab.Area(modRatio)) * array[0] * array[1]);
 
         }
 
